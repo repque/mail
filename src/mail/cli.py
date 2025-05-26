@@ -13,6 +13,7 @@ def main():
     parser.add_argument("--to", required=True, nargs="+", help="Recipient email addresses")
     parser.add_argument("--subject", required=True, help="Email subject")
     parser.add_argument("--body", required=True, help="Email body")
+    parser.add_argument("--from", dest="from_addr", help="Sender email address (overrides default)")
     parser.add_argument("--cc", nargs="*", help="CC email addresses")
     parser.add_argument("--bcc", nargs="*", help="BCC email addresses")
     parser.add_argument("--html", action="store_true", help="Send as HTML email")
@@ -39,7 +40,7 @@ def main():
         )
         
         # Send email
-        success = client.send_email(email)
+        success = client.send_email(email, from_addr=args.from_addr)
         
         if success:
             print(f"✓ Email sent successfully to {', '.join(args.to)}")

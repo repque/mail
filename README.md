@@ -82,6 +82,14 @@ email = EmailMessage(
     body_type="html"
 )
 client.send_email(email)
+
+# Send email with custom from address
+email = EmailMessage(
+    to=["user@example.com"],
+    subject="System Notification",
+    body="Your backup has completed successfully."
+)
+client.send_email(email, from_addr="noreply@mycompany.com")
 ```
 
 ### Command Line Interface
@@ -104,6 +112,13 @@ gmail-send \
   --subject "Team Update" \
   --body "Meeting moved to 4pm tomorrow"
 
+# Custom from address
+gmail-send \
+  --to user@example.com \
+  --from "notifications@mycompany.com" \
+  --subject "System Alert" \
+  --body "Server maintenance scheduled for tonight"
+
 # Custom credential files
 gmail-send \
   --to user@example.com \
@@ -119,6 +134,7 @@ gmail-send \
 --to          Recipient email addresses (required)
 --subject     Email subject (required)  
 --body        Email body (required)
+--from        Sender email address (optional, overrides default)
 --cc          CC email addresses (optional)
 --bcc         BCC email addresses (optional)
 --html        Send as HTML email (optional)
@@ -213,7 +229,7 @@ GmailClient(
 )
 
 # Methods
-client.send_email(email: EmailMessage) -> bool
+client.send_email(email: EmailMessage, from_addr: str = None) -> bool
 ```
 
 ## License

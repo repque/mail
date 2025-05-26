@@ -94,6 +94,32 @@ class TestGmailClient:
     @patch('src.mail.mail_client.Credentials.from_authorized_user_file')
     @patch('src.mail.mail_client.build')
     @patch.dict(os.environ, {"GMAIL_USERNAME": "test@gmail.com"})
+    def test_send_email_with_custom_from(self, mock_build, mock_creds_from_file, mock_exists):
+        mock_exists.return_value = True
+        mock_creds = MagicMock()
+        mock_creds.valid = True
+        mock_creds.expired = False
+        mock_creds_from_file.return_value = mock_creds
+        
+        mock_service = MagicMock()
+        mock_build.return_value = mock_service
+        mock_service.users().messages().send().execute.return_value = {'id': 'message123'}
+        
+        client = GmailClient()
+        email = EmailMessage(
+            to=["recipient@example.com"],
+            subject="Test",
+            body="Test body"
+        )
+        
+        result = client.send_email(email, from_addr="custom@example.com")
+        assert result is True
+        mock_service.users().messages().send.assert_called_once()
+    
+    @patch('src.mail.mail_client.Path.exists')
+    @patch('src.mail.mail_client.Credentials.from_authorized_user_file')
+    @patch('src.mail.mail_client.build')
+    @patch.dict(os.environ, {"GMAIL_USERNAME": "test@gmail.com"})
     def test_send_email_failure(self, mock_build, mock_creds_from_file, mock_exists):
         mock_exists.return_value = True
         mock_creds = MagicMock()

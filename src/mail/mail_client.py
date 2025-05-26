@@ -77,12 +77,12 @@ class GmailClient:
             raise ValueError("Cannot determine email address. Set GMAIL_USERNAME env var.")
         return email
     
-    def send_email(self, email: EmailMessage) -> bool:
+    def send_email(self, email: EmailMessage, from_addr: Optional[str] = None) -> bool:
         """Send an email via Gmail API"""
         try:
             # Create MIME message
             msg = MIMEMultipart()
-            msg['From'] = self.username
+            msg['From'] = from_addr or self.username
             msg['To'] = ', '.join(email.to)
             msg['Subject'] = email.subject
             
